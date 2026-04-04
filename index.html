@@ -9,6 +9,7 @@
 <script src="https://unpkg.com/@phosphor-icons/web"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
 <style>
 :root{
   --p1: #FF3A1A; /* Electric Orange Accent */
@@ -143,7 +144,8 @@ footer{border-top:1px solid var(--border);padding:4rem 1.5rem;text-align:center;
   .specs-grid{grid-template-columns:repeat(2,1fr)}
 }
 @media(max-width:768px){
-  nav{padding:1rem 1.5rem}
+  nav{padding:1rem 1.5rem; backdrop-filter: none !important; background: var(--bg2) !important;}
+  body::before{display:none !important;} /* Disable heavy radial painting on mobile */
   .nav-links{display:none;flex-direction:column;align-items:center;position:fixed;top:66px;left:0;right:0;background:var(--bg2);padding:2.5rem 1.5rem;gap:2rem;border-bottom:1px solid var(--border);box-shadow:0 10px 20px rgba(0,0,0,0.05);transition:all .3s ease;opacity:0}
   .nav-links.open{display:flex;opacity:1}
   .nav-toggle{display:flex}
@@ -351,9 +353,11 @@ document.querySelectorAll('.reveal,.tli').forEach(el=>io.observe(el));
   const _tok=Math.random().toString(36).slice(2);
   const cv=document.getElementById('c3d');
   const pw=cv.parentElement;
-  const rnd=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true,preserveDrawingBuffer:false});
-  rnd.setPixelRatio(Math.min(devicePixelRatio,2));
-  rnd.shadowMap.enabled=true;
+  
+  // Restoring anti-aliasing and boosting pixel ratio for high-quality rendering
+  const rnd=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true,preserveDrawingBuffer:false,powerPreference:"high-performance"});
+  rnd.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+  rnd.shadowMap.enabled=false;
   
   function sz(){
     const w=pw.clientWidth,h=pw.clientHeight;
@@ -376,7 +380,6 @@ document.querySelectorAll('.reveal,.tli').forEach(el=>io.observe(el));
 
   const sl = new THREE.DirectionalLight(0xffffff, 2.8);
   sl.position.set(5, 10, 5);
-  sl.castShadow = true;
   scene.add(sl);
   
   const rl = new THREE.DirectionalLight(0xff3a1a, 1.2); // Orange rim light boosted
@@ -397,8 +400,12 @@ document.querySelectorAll('.reveal,.tli').forEach(el=>io.observe(el));
 
   document.getElementById('modelStatus').textContent = 'SYS: LOADING...';
   
-  // Use GLTFLoader to load taxi.glb directly
+  // Use GLTFLoader with DRACOLoader for heavily compressed geometry
   const loader = new THREE.GLTFLoader();
+  const dracoLoader = new THREE.DRACOLoader();
+  dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
+  loader.setDRACOLoader(dracoLoader);
+  
   loader.load('taxi.glb', g => {
     // Auto-center the model based on its bounding box
     const box = new THREE.Box3().setFromObject(g.scene);
@@ -506,11 +513,21 @@ document.querySelectorAll('.reveal,.tli').forEach(el=>io.observe(el));
   const stats=['SYS: ONLINE','RPM: 1240','PWR: 87%','ALT: 120M','NAV: ACTIVE'];
   let si=0;setInterval(()=>{if(statEl.textContent!=='SYS: LOADING...')statEl.textContent=stats[si++%stats.length];},2200);
   
-  // RENDER LOOP
+  // OPTIMIZATION: Pause heavy 3D rendering when the user scrolls past the canvas
+  let isVisible = true;
+  new IntersectionObserver(entries => {
+    isVisible = entries[0].isIntersecting;
+  }, { threshold: 0.0 }).observe(cv);
+
   let t=0;
   let propSpeed=0.8; // Default fast propeller speed
   const _render=()=>{
-    requestAnimationFrame(_render);t+=.016;
+    requestAnimationFrame(_render);
+    
+    // Completely skip GPU processing if the model is off-screen
+    if (!isVisible) return;
+
+    t+=.016;
     
     // Target speed interpolation (fast when idling, slow when touched/dragged)
     const targetSpeed = drag ? 0.05 : 0.8;
