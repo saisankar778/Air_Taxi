@@ -108,7 +108,9 @@ section{padding:5.5rem 1.5rem;position:relative;z-index:2;max-width:1200px;margi
 .mcard:hover{background:var(--p2);color:var(--bg2)}
 .mcard:hover *{color:var(--bg2)!important}
 .mcard:hover .mrole{color:var(--p1)!important}
-.avatar{width:64px;height:64px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;font-family:'Syne Mono',monospace;font-size:.9rem;color:var(--text);font-weight:700;border:2px solid var(--border);transition:all .3s}
+.avatar{width:120px;height:120px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;font-family:'Syne Mono',monospace;font-size:1.2rem;color:var(--text);font-weight:700;border:3px solid var(--border);transition:all .3s;overflow:hidden}
+.avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;transition:transform .3s}
+.mcard:hover .avatar img{transform:scale(1.08)}
 .mcard:hover .avatar{background:var(--bg2);color:var(--text);border-color:var(--bg2)}
 .mname{font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.3rem;letter-spacing:.05em;color:var(--text);transition:color .3s}
 .mid{font-size:.65rem;color:var(--muted);font-family:'Syne Mono',monospace;letter-spacing:.05em;transition:color .3s}
@@ -274,16 +276,16 @@ footer{border-top:1px solid var(--border);padding:4rem 1.5rem;text-align:center;
     <p class="sec-sub reveal" style="max-width:320px;margin:0">Nine engineers. One mission. Redefine the future of urban mobility.</p>
   </div>
   <div class="team-grid">
-    <div class="mcard reveal"><div class="avatar">CM</div><div class="mname">Ch. Manikanta</div><div class="mid">AP24110020076</div><div class="mrole">Lead Engineer</div></div>
-    <div class="mcard reveal"><div class="avatar">KM</div><div class="mname">K. Manoj Kumar</div><div class="mid">AP24110020071</div><div class="mrole">Propulsion</div></div>
-    <div class="mcard reveal"><div class="avatar">JS</div><div class="mname">J. Sai Deekshith</div><div class="mid">AP24110020097</div><div class="mrole">Avionics</div></div>
-    <div class="mcard reveal"><div class="avatar">AP</div><div class="mname">Agastya Pandey</div><div class="mid">AP25110070258</div><div class="mrole">AI Systems</div></div>
-    <div class="mcard reveal"><div class="avatar">AW</div><div class="mname">Ashwith</div><div class="mid">AP24110020010</div><div class="mrole">Structures</div></div>
-    <div class="mcard reveal"><div class="avatar">SJ</div><div class="mname">Sanjay</div><div class="mid">AP24110020043</div><div class="mrole">Electronics</div></div>
-    <div class="mcard reveal"><div class="avatar">MK</div><div class="mname">Manikanta</div><div class="mid">AP22110020138</div><div class="mrole">Software</div></div>
-    <div class="mcard reveal"><div class="avatar">AK</div><div class="mname">Ajit Kumar</div><div class="mid">AP22110020059</div><div class="mrole">Control Systems</div></div>
-    <div class="mcard reveal"><div class="avatar">SS</div><div class="mname">Sai Sankar</div><div class="mid">AP23110010778</div><div class="mrole">Aerodynamics</div></div>
-    <div class="mcard reveal"><div class="avatar">BR</div><div class="mname">B. Ramprasad Reddy</div><div class="mid">AP24110020096</div><div class="mrole">Engineer</div></div>
+    <div class="mcard reveal"><div class="avatar"><img src="photos/ch_manikanta.jpeg" alt="Ch. Manikanta"></div><div class="mname">Ch. Manikanta</div><div class="mid">AP24110020076</div><div class="mrole">Lead Engineer</div></div>
+    <div class="mcard reveal"><div class="avatar"><img src="photos/Manoj.jpeg" alt="K. Manoj Kumar"></div><div class="mname">K. Manoj Kumar</div><div class="mid">AP24110020071</div><div class="mrole">Propulsion</div></div>
+    <div class="mcard reveal"><div class="avatar"><img src="photos/deekshith.jpeg" alt="J. Sai Deekshith"></div><div class="mname">J. Sai Deekshith</div><div class="mid">AP24110020097</div><div class="mrole">Avionics</div></div>
+    <div class="mcard reveal"><div class="avatar"><img src="photos/agastya pandey.jpeg" alt="Agastya Pandey"></div><div class="mname">Agastya Pandey</div><div class="mid">AP25110070258</div><div class="mrole">AI Systems</div></div>
+    <div class="mcard reveal"><div class="avatar"><img src="photos/Aswith.jpeg" alt="Ashwith"></div><div class="mname">Ashwith</div><div class="mid">AP24110020010</div><div class="mrole">Structures</div></div>
+    <div class="mcard reveal"><div class="avatar"><img src="photos/sanjay.jpeg" alt="Sanjay"></div><div class="mname">Sanjay</div><div class="mid">AP24110020043</div><div class="mrole">Electronics</div></div>
+    <div class="mcard reveal"><div class="avatar"><img src="photos/Manikanta.jpeg" alt="Manikanta"></div><div class="mname">Manikanta</div><div class="mid">AP22110020138</div><div class="mrole">Software</div></div>
+    <div class="mcard reveal"><div class="avatar"><img src="photos/Ajit_kumar.jpeg" alt="Ajit Kumar"></div><div class="mname">Ajit Kumar</div><div class="mid">AP22110020059</div><div class="mrole">Control Systems</div></div>
+    <div class="mcard reveal"><div class="avatar"><img src="photos/sai sankar.jpeg" alt="Sai Sankar"></div><div class="mname">Sai Sankar</div><div class="mid">AP23110010778</div><div class="mrole">Aerodynamics</div></div>
+    <div class="mcard reveal"><div class="avatar"><img src="photos/Ramprasad.jpeg" alt="B. Ramprasad Reddy"></div><div class="mname">B. Ramprasad Reddy</div><div class="mid">AP24110020096</div><div class="mrole">Engineer</div></div>
   </div>
   
   <div class="guide-banner reveal" style="margin-top: 3rem; background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 2.5rem; text-align: center; box-shadow: 0 10px 30px var(--shadow);">
