@@ -1,559 +1,1504 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sky Works — Next-Gen Air Mobility</title>
-<meta name="description" content="Sky Works is building autonomous electric air taxis for the cities of tomorrow. Zero emissions. Zero traffic. Infinite sky.">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne+Mono&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
-<script src="https://unpkg.com/@phosphor-icons/web"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
-<style>
-:root{
-  --p1: #FF3A1A; /* Electric Orange Accent */
-  --p2: #0A1128; /* Deep Navy/Black Accent */
-  --bg: #F8F7F2; /* Cream Background */
-  --bg2: #FFFFFF; /* Pure White elements */
-  --bg3: #EBEBE5; /* Darker Cream */
-  --text: #101010; /* Near Black Text */
-  --muted: #606060; /* Dark Grey */
-  --border: rgba(16, 16, 16, 0.12);
-  --shadow: rgba(0,0,0,0.06);
-}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sky Works — Next-Gen Air Mobility</title>
+  <meta name="description"
+    content="Sky Works is building autonomous electric air taxis for the cities of tomorrow. Zero emissions. Zero traffic. Infinite sky.">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne+Mono&family=Rajdhani:wght@500;600;700&display=swap"
+    rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
+  <style>
+    :root {
+      --p1: #FF3A1A;
+      /* Electric Orange Accent */
+      --p2: #0A1128;
+      /* Deep Navy/Black Accent */
+      --bg: #F8F7F2;
+      /* Cream Background */
+      --bg2: #FFFFFF;
+      /* Pure White elements */
+      --bg3: #EBEBE5;
+      /* Darker Cream */
+      --text: #101010;
+      /* Near Black Text */
+      --muted: #606060;
+      /* Dark Grey */
+      --border: rgba(16, 16, 16, 0.12);
+      --shadow: rgba(0, 0, 0, 0.06);
+    }
 
-*{margin:0;padding:0;box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:'Space Grotesk',sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased}
-::selection{background:var(--text);color:var(--bg)}
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box
+    }
 
-/* SUBTLE DOT BACKGROUND */
-body::before{content:'';position:fixed;inset:0;background-image:radial-gradient(var(--border) 1px,transparent 1px);background-size:24px 24px;z-index:0;pointer-events:none}
+    html {
+      scroll-behavior: smooth
+    }
 
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.2rem 2.5rem;background:rgba(248, 247, 242, 0.85);backdrop-filter:blur(16px);border-bottom:1px solid var(--border)}
-.logo{font-family:'Syne Mono',monospace;font-size:1.2rem;font-weight:700;letter-spacing:.2em;color:var(--text);text-transform:uppercase}
-.logo span{color:var(--p1)}
-.nav-links{display:flex;gap:2rem;list-style:none}
-.nav-links a{color:var(--text);text-decoration:none;font-size:.75rem;letter-spacing:.12em;text-transform:uppercase;font-weight:600;transition:color .2s;font-family:'Rajdhani',sans-serif}
-.nav-links a:hover{color:var(--p1)}
-.nav-toggle{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;z-index:101}
-.nav-toggle span{width:24px;height:2px;background:var(--text);display:block;transition:.3s;transform-origin:left center}
-.nav-toggle.open span:nth-child(1){transform:rotate(45deg)}
-.nav-toggle.open span:nth-child(2){opacity:0}
-.nav-toggle.open span:nth-child(3){transform:rotate(-45deg)}
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased
+    }
 
-/* HERO */
-#hero{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;z-index:2;padding:8rem 1.5rem 4rem;text-align:center;overflow:hidden}
-.badge{display:inline-flex;align-items:center;gap:.6rem;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--text);border:1px solid var(--border);padding:.5rem 1.2rem;border-radius:30px;background:var(--bg2);margin-bottom:2rem;animation:fadeUp .9s ease .1s both;font-family:'Rajdhani',sans-serif;font-weight:700;box-shadow:0 4px 12px var(--shadow)}
-.badge-dot{width:6px;height:6px;border-radius:50%;background:var(--p1);animation:pulse 1.8s ease infinite}
-@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.6)}}
-h1.hero-title{font-family:'Rajdhani',sans-serif;font-size:clamp(3rem,10vw,7.5rem);font-weight:700;line-height:0.95;letter-spacing:-.02em;animation:fadeUp .9s ease .3s both;color:var(--text)}
-.ht-accent{color:var(--p1)}
-.hero-sub{max-width:550px;margin:2rem auto 3rem;color:var(--muted);font-size:1.05rem;line-height:1.7;animation:fadeUp .9s ease .5s both;font-weight:500}
-.hero-btns{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;animation:fadeUp .9s ease .7s both}
-.btn-p{display:inline-block;background:var(--text);color:var(--bg);padding:.9rem 2.4rem;border-radius:4px;font-family:'Rajdhani',sans-serif;font-size:.85rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;border:none;cursor:pointer;text-decoration:none;transition:all .3s}
-.btn-p:hover{background:var(--p1);transform:translateY(-2px);box-shadow:0 10px 20px rgba(255,58,26,0.2)}
-.btn-o{display:inline-block;background:transparent;color:var(--text);padding:.9rem 2.4rem;border-radius:4px;font-family:'Rajdhani',sans-serif;font-size:.85rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;border:1px solid var(--text);cursor:pointer;text-decoration:none;transition:all .3s}
-.btn-o:hover{background:var(--border);transform:translateY(-2px)}
+    ::selection {
+      background: var(--text);
+      color: var(--bg)
+    }
 
-/* MODEL */
-#model-section{padding:5rem 1.5rem;position:relative;z-index:2;background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
-.model-wrap{width:100%;max-width:900px;height:55vh;min-height:350px;border-radius:12px;border:1px solid var(--border);background:var(--bg);position:relative;overflow:hidden;margin:0 auto;box-shadow:0 20px 40px var(--shadow)}
-#c3d{width:100%;height:100%;display:block;outline:none}
-.hud-corner{position:absolute;width:16px;height:16px;pointer-events:none;z-index:2}
-.hud-corner.tl{top:12px;left:12px;border-top:2px solid var(--text);border-left:2px solid var(--text)}
-.hud-corner.tr{top:12px;right:12px;border-top:2px solid var(--text);border-right:2px solid var(--text)}
-.hud-corner.bl{bottom:12px;left:12px;border-bottom:2px solid var(--p1);border-left:2px solid var(--p1)}
-.hud-corner.br{bottom:12px;right:12px;border-bottom:2px solid var(--p1);border-right:2px solid var(--p1)}
-.hud-top{position:absolute;top:14px;left:50%;transform:translateX(-50%);font-family:'Syne Mono',monospace;font-size:.65rem;color:var(--text);letter-spacing:.15em;z-index:2;font-weight:700}
-.model-status{position:absolute;top:14px;right:16px;font-family:'Syne Mono',monospace;font-size:.6rem;color:var(--p1);z-index:2;letter-spacing:.1em;font-weight:700}
-.mctrl{display:flex;gap:.5rem;margin-top:1.5rem;flex-wrap:wrap;justify-content:center}
-.cbtn{background:var(--bg2);border:1px solid var(--border);color:var(--text);padding:.6rem 1.2rem;border-radius:4px;font-size:.7rem;letter-spacing:.1em;cursor:pointer;transition:all .2s;font-family:'Rajdhani',sans-serif;font-weight:700;text-transform:uppercase}
-.cbtn:hover,.cbtn.on{color:var(--bg);border-color:var(--text);background:var(--text)}
+    /* SUBTLE DOT BACKGROUND */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(var(--border) 1px, transparent 1px);
+      background-size: 24px 24px;
+      z-index: 0;
+      pointer-events: none
+    }
 
-/* SECTIONS */
-section{padding:5.5rem 1.5rem;position:relative;z-index:2;max-width:1200px;margin:0 auto}
-.eyebrow{font-size:.7rem;letter-spacing:.25em;color:var(--p1);text-transform:uppercase;margin-bottom:1rem;display:flex;align-items:center;gap:.75rem;font-family:'Rajdhani',sans-serif;font-weight:700}
-.sec-title{font-family:'Rajdhani',sans-serif;font-size:clamp(2rem,6vw,3.5rem);font-weight:700;margin-bottom:1.2rem;line-height:1.1;color:var(--text)}
-.sec-sub{color:var(--muted);max-width:600px;line-height:1.8;font-size:1rem;font-weight:400}
-.center{text-align:center}.center .eyebrow{justify-content:center}.center .sec-sub{margin:0 auto}
+    /* NAV */
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1.2rem 2.5rem;
+      background: rgba(248, 247, 242, 0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border)
+    }
 
-/* SPECS */
-.specs-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:1px;margin-top:3rem;border:1px solid var(--border);border-radius:12px;background:var(--border);overflow:hidden;box-shadow:0 10px 30px var(--shadow)}
-.spec-card{background:var(--bg2);padding:2rem 1.5rem;text-align:center;transition:background .3s}
-.spec-card:hover{background:var(--bg)}
-.spec-num{font-family:'Rajdhani',sans-serif;font-size:2.8rem;font-weight:700;color:var(--text);line-height:1;margin-bottom:.3rem;transition:color .3s}
-.spec-card:hover .spec-num{color:var(--p1)}
-.spec-unit{font-size:1rem;opacity:.6;font-weight:600}
-.spec-label{font-size:.7rem;color:var(--muted);letter-spacing:.15em;text-transform:uppercase;margin-top:.5rem;font-family:'Rajdhani',sans-serif;font-weight:600}
-.spec-icon{font-size:1.6rem;margin-bottom:1rem;color:var(--text)}
+    .logo {
+      font-family: 'Syne Mono', monospace;
+      font-size: 1.2rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      color: var(--text);
+      text-transform: uppercase
+    }
 
-/* FEATURES */
-.feats-container{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:6rem 1.5rem;width:100%!important;max-width:none!important}
-.feats-wrap{max-width:1200px;margin:0 auto}
-.feats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:2rem;margin-top:3.5rem}
-.feat{background:var(--bg);border:1px solid var(--border);padding:2.5rem;border-radius:12px;transition:all .3s;box-shadow:0 4px 10px var(--shadow)}
-.feat:hover{transform:translateY(-5px);border-color:var(--text);box-shadow:0 15px 30px var(--shadow)}
-.feat-num{font-family:'Syne Mono',monospace;font-size:.65rem;color:var(--p1);letter-spacing:.15em;margin-bottom:1.5rem;font-weight:700}
-.feat-icon{font-size:1.8rem;margin-bottom:1.2rem}
-.feat-title{font-family:'Rajdhani',sans-serif;font-size:1.2rem;font-weight:700;margin-bottom:.8rem;letter-spacing:.05em;color:var(--text)}
-.feat-desc{color:var(--muted);font-size:.95rem;line-height:1.7;font-weight:400}
+    .logo span {
+      color: var(--p1)
+    }
 
-/* TEAM */
-.team-intro{display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:1.5rem;margin-bottom:3rem}
-.team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:0 10px 30px var(--shadow)}
-.mcard{background:var(--bg2);padding:2rem 1.2rem;text-align:center;transition:all .3s}
-.mcard:hover{background:var(--p2);color:var(--bg2)}
-.mcard:hover *{color:var(--bg2)!important}
-.mcard:hover .mrole{color:var(--p1)!important}
-.avatar{width:120px;height:120px;border-radius:50%;background:var(--bg3);display:flex;align-items:center;justify-content:center;margin:0 auto 1.2rem;font-family:'Syne Mono',monospace;font-size:1.2rem;color:var(--text);font-weight:700;border:3px solid var(--border);transition:all .3s;overflow:hidden}
-.avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;transition:transform .3s}
-.mcard:hover .avatar img{transform:scale(1.08)}
-.mcard:hover .avatar{background:var(--bg2);color:var(--text);border-color:var(--bg2)}
-.mname{font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;margin-bottom:.3rem;letter-spacing:.05em;color:var(--text);transition:color .3s}
-.mid{font-size:.65rem;color:var(--muted);font-family:'Syne Mono',monospace;letter-spacing:.05em;transition:color .3s}
-.mrole{font-size:.65rem;color:var(--p1);margin-top:.8rem;letter-spacing:.15em;text-transform:uppercase;font-family:'Rajdhani',sans-serif;font-weight:700;transition:color .3s}
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none
+    }
 
-/* TIMELINE */
-.tl-wrap{position:relative;max-width:800px;margin:4rem auto 0;padding-left:2.5rem}
-.tl-track{position:absolute;left:0;top:0;bottom:0;width:2px;background:var(--border)}
-.tli{display:flex;gap:2rem;margin-bottom:3rem;opacity:0;transform:translateX(-20px);transition:all .6s ease}
-.tli.vis{opacity:1;transform:translateX(0)}
-.tl-dot{width:48px;height:48px;flex-shrink:0;border-radius:50%;background:var(--text);color:var(--bg);display:flex;align-items:center;justify-content:center;font-size:1.2rem;position:relative;z-index:1;margin-left:-49px;box-shadow:0 0 0 6px var(--bg)}
-.tli:hover .tl-dot{background:var(--p1)}
-.tl-body{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:2rem;flex:1;box-shadow:0 5px 15px var(--shadow)}
-.tl-phase{font-family:'Syne Mono',monospace;font-size:.65rem;color:var(--p1);letter-spacing:.2em;margin-bottom:.5rem;font-weight:700}
-.tl-head{font-family:'Rajdhani',sans-serif;font-size:1.2rem;font-weight:700;margin-bottom:.8rem;color:var(--text)}
-.tl-desc{font-size:.95rem;color:var(--muted);line-height:1.7}
+    .nav-links a {
+      color: var(--text);
+      text-decoration: none;
+      font-size: .75rem;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      font-weight: 600;
+      transition: color .2s;
+      font-family: 'Rajdhani', sans-serif
+    }
 
-/* FOOTER */
-footer{border-top:1px solid var(--border);padding:4rem 1.5rem;text-align:center;background:var(--bg2)}
-.f-logo{font-family:'Syne Mono',monospace;font-size:1.8rem;font-weight:700;letter-spacing:.2em;color:var(--text);margin-bottom:.8rem}
-.f-logo span{color:var(--p1)}
-.f-sub{font-size:.85rem;color:var(--muted);letter-spacing:.08em;margin-top:.5rem;font-weight:500}
-.f-credits{margin-top:2rem;font-size:.65rem;color:var(--muted);letter-spacing:.1em;font-family:'Syne Mono',monospace;opacity:.6}
+    .nav-links a:hover {
+      color: var(--p1)
+    }
 
-/* UTILS */
-@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-.reveal{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
-.reveal.vis{opacity:1;transform:translateY(0)}
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      background: none;
+      border: none;
+      z-index: 101
+    }
 
-/* MOBILE RESPONSIVENESS */
-@media(max-width:900px){
-  .team-grid{grid-template-columns:repeat(2,1fr)}
-  .specs-grid{grid-template-columns:repeat(2,1fr)}
-}
-@media(max-width:768px){
-  nav{padding:1rem 1.5rem; backdrop-filter: none !important; background: var(--bg2) !important;}
-  body::before{display:none !important;} /* Disable heavy radial painting on mobile */
-  .nav-links{display:none;flex-direction:column;align-items:center;position:fixed;top:66px;left:0;right:0;background:var(--bg2);padding:2.5rem 1.5rem;gap:2rem;border-bottom:1px solid var(--border);box-shadow:0 10px 20px rgba(0,0,0,0.05);transition:all .3s ease;opacity:0}
-  .nav-links.open{display:flex;opacity:1}
-  .nav-toggle{display:flex}
-  
-  #hero{padding-top:7rem}
-  h1.hero-title{font-size:clamp(2.5rem,12vw,4rem)}
-  .hero-btns{flex-direction:column;width:100%}
-  .btn-p, .btn-o{width:100%;text-align:center}
-  
-  .model-wrap{height:40vh;min-height:300px}
-  .cbtn{flex:1 1 calc(50% - .5rem);text-align:center;font-size:.65rem}
-  
-  section{padding:4rem 1.5rem}
-  .feats-container{padding:4rem 1.5rem}
-  .team-intro{flex-direction:column;align-items:flex-start}
-  
-  .tl-wrap{padding-left:1.5rem}
-  .tl-dot{width:36px;height:36px;margin-left:-33px;font-size:.9rem}
-  .tli{gap:1rem}
-  .tl-body{padding:1.5rem}
-}
-@media(max-width:480px){
-  .team-grid{grid-template-columns:1fr}
-  .specs-grid{grid-template-columns:1fr;gap:0;border-bottom:none}
-  .spec-card{border-bottom:1px solid var(--border)}
-}
-</style>
+    .nav-toggle span {
+      width: 24px;
+      height: 2px;
+      background: var(--text);
+      display: block;
+      transition: .3s;
+      transform-origin: left center
+    }
+
+    .nav-toggle.open span:nth-child(1) {
+      transform: rotate(45deg)
+    }
+
+    .nav-toggle.open span:nth-child(2) {
+      opacity: 0
+    }
+
+    .nav-toggle.open span:nth-child(3) {
+      transform: rotate(-45deg)
+    }
+
+    /* HERO */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+      padding: 8rem 1.5rem 4rem;
+      text-align: center;
+      overflow: hidden
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      font-size: .7rem;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: .5rem 1.2rem;
+      border-radius: 30px;
+      background: var(--bg2);
+      margin-bottom: 2rem;
+      animation: fadeUp .9s ease .1s both;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      box-shadow: 0 4px 12px var(--shadow)
+    }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--p1);
+      animation: pulse 1.8s ease infinite
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1)
+      }
+
+      50% {
+        opacity: .4;
+        transform: scale(.6)
+      }
+    }
+
+    h1.hero-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(3rem, 10vw, 7.5rem);
+      font-weight: 700;
+      line-height: 0.95;
+      letter-spacing: -.02em;
+      animation: fadeUp .9s ease .3s both;
+      color: var(--text)
+    }
+
+    .ht-accent {
+      color: var(--p1)
+    }
+
+    .hero-sub {
+      max-width: 550px;
+      margin: 2rem auto 3rem;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      animation: fadeUp .9s ease .5s both;
+      font-weight: 500
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+      animation: fadeUp .9s ease .7s both
+    }
+
+    .btn-p {
+      display: inline-block;
+      background: var(--text);
+      color: var(--bg);
+      padding: .9rem 2.4rem;
+      border-radius: 4px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .85rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all .3s
+    }
+
+    .btn-p:hover {
+      background: var(--p1);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(255, 58, 26, 0.2)
+    }
+
+    .btn-o {
+      display: inline-block;
+      background: transparent;
+      color: var(--text);
+      padding: .9rem 2.4rem;
+      border-radius: 4px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: .85rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      border: 1px solid var(--text);
+      cursor: pointer;
+      text-decoration: none;
+      transition: all .3s
+    }
+
+    .btn-o:hover {
+      background: var(--border);
+      transform: translateY(-2px)
+    }
+
+    /* MODEL */
+    #model-section {
+      padding: 5rem 1.5rem;
+      position: relative;
+      z-index: 2;
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border)
+    }
+
+    .model-wrap {
+      width: 100%;
+      max-width: 900px;
+      height: 55vh;
+      min-height: 350px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      position: relative;
+      overflow: hidden;
+      margin: 0 auto;
+      box-shadow: 0 20px 40px var(--shadow)
+    }
+
+    #c3d {
+      width: 100%;
+      height: 100%;
+      display: block;
+      outline: none
+    }
+
+    .hud-corner {
+      position: absolute;
+      width: 16px;
+      height: 16px;
+      pointer-events: none;
+      z-index: 2
+    }
+
+    .hud-corner.tl {
+      top: 12px;
+      left: 12px;
+      border-top: 2px solid var(--text);
+      border-left: 2px solid var(--text)
+    }
+
+    .hud-corner.tr {
+      top: 12px;
+      right: 12px;
+      border-top: 2px solid var(--text);
+      border-right: 2px solid var(--text)
+    }
+
+    .hud-corner.bl {
+      bottom: 12px;
+      left: 12px;
+      border-bottom: 2px solid var(--p1);
+      border-left: 2px solid var(--p1)
+    }
+
+    .hud-corner.br {
+      bottom: 12px;
+      right: 12px;
+      border-bottom: 2px solid var(--p1);
+      border-right: 2px solid var(--p1)
+    }
+
+    .hud-top {
+      position: absolute;
+      top: 14px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-family: 'Syne Mono', monospace;
+      font-size: .65rem;
+      color: var(--text);
+      letter-spacing: .15em;
+      z-index: 2;
+      font-weight: 700
+    }
+
+    .model-status {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      font-family: 'Syne Mono', monospace;
+      font-size: .6rem;
+      color: var(--p1);
+      z-index: 2;
+      letter-spacing: .1em;
+      font-weight: 700
+    }
+
+    .mctrl {
+      display: flex;
+      gap: .5rem;
+      margin-top: 1.5rem;
+      flex-wrap: wrap;
+      justify-content: center
+    }
+
+    .cbtn {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: .6rem 1.2rem;
+      border-radius: 4px;
+      font-size: .7rem;
+      letter-spacing: .1em;
+      cursor: pointer;
+      transition: all .2s;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      text-transform: uppercase
+    }
+
+    .cbtn:hover,
+    .cbtn.on {
+      color: var(--bg);
+      border-color: var(--text);
+      background: var(--text)
+    }
+
+    /* SECTIONS */
+    section {
+      padding: 5.5rem 1.5rem;
+      position: relative;
+      z-index: 2;
+      max-width: 1200px;
+      margin: 0 auto
+    }
+
+    .eyebrow {
+      font-size: .7rem;
+      letter-spacing: .25em;
+      color: var(--p1);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: .75rem;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700
+    }
+
+    .sec-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: clamp(2rem, 6vw, 3.5rem);
+      font-weight: 700;
+      margin-bottom: 1.2rem;
+      line-height: 1.1;
+      color: var(--text)
+    }
+
+    .sec-sub {
+      color: var(--muted);
+      max-width: 600px;
+      line-height: 1.8;
+      font-size: 1rem;
+      font-weight: 400
+    }
+
+    .center {
+      text-align: center
+    }
+
+    .center .eyebrow {
+      justify-content: center
+    }
+
+    .center .sec-sub {
+      margin: 0 auto
+    }
+
+    /* SPECS */
+    .specs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 1px;
+      margin-top: 3rem;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--border);
+      overflow: hidden;
+      box-shadow: 0 10px 30px var(--shadow)
+    }
+
+    .spec-card {
+      background: var(--bg2);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      transition: background .3s
+    }
+
+    .spec-card:hover {
+      background: var(--bg)
+    }
+
+    .spec-num {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 2.8rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1;
+      margin-bottom: .3rem;
+      transition: color .3s
+    }
+
+    .spec-card:hover .spec-num {
+      color: var(--p1)
+    }
+
+    .spec-unit {
+      font-size: 1rem;
+      opacity: .6;
+      font-weight: 600
+    }
+
+    .spec-label {
+      font-size: .7rem;
+      color: var(--muted);
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      margin-top: .5rem;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 600
+    }
+
+    .spec-icon {
+      font-size: 1.6rem;
+      margin-bottom: 1rem;
+      color: var(--text)
+    }
+
+    /* FEATURES */
+    .feats-container {
+      background: var(--bg2);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 6rem 1.5rem;
+      width: 100% !important;
+      max-width: none !important
+    }
+
+    .feats-wrap {
+      max-width: 1200px;
+      margin: 0 auto
+    }
+
+    .feats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 3.5rem
+    }
+
+    .feat {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 2.5rem;
+      border-radius: 12px;
+      transition: all .3s;
+      box-shadow: 0 4px 10px var(--shadow)
+    }
+
+    .feat:hover {
+      transform: translateY(-5px);
+      border-color: var(--text);
+      box-shadow: 0 15px 30px var(--shadow)
+    }
+
+    .feat-num {
+      font-family: 'Syne Mono', monospace;
+      font-size: .65rem;
+      color: var(--p1);
+      letter-spacing: .15em;
+      margin-bottom: 1.5rem;
+      font-weight: 700
+    }
+
+    .feat-icon {
+      font-size: 1.8rem;
+      margin-bottom: 1.2rem
+    }
+
+    .feat-title {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: .8rem;
+      letter-spacing: .05em;
+      color: var(--text)
+    }
+
+    .feat-desc {
+      color: var(--muted);
+      font-size: .95rem;
+      line-height: 1.7;
+      font-weight: 400
+    }
+
+    /* TEAM */
+    .team-intro {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      margin-bottom: 3rem
+    }
+
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px var(--shadow)
+    }
+
+    .mcard {
+      background: var(--bg2);
+      padding: 2rem 1.2rem;
+      text-align: center;
+      transition: all .3s
+    }
+
+    .mcard:hover {
+      background: var(--p2);
+      color: var(--bg2)
+    }
+
+    .mcard:hover * {
+      color: var(--bg2) !important
+    }
+
+    .mcard:hover .mrole {
+      color: var(--p1) !important
+    }
+
+    .avatar {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: var(--bg3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.2rem;
+      font-family: 'Syne Mono', monospace;
+      font-size: 1.2rem;
+      color: var(--text);
+      font-weight: 700;
+      border: 3px solid var(--border);
+      transition: all .3s;
+      overflow: hidden
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      display: block;
+      transition: transform .3s
+    }
+
+    .mcard:hover .avatar img {
+      transform: scale(1.08)
+    }
+
+    .mcard:hover .avatar {
+      background: var(--bg2);
+      color: var(--text);
+      border-color: var(--bg2)
+    }
+
+    .mname {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: .3rem;
+      letter-spacing: .05em;
+      color: var(--text);
+      transition: color .3s
+    }
+
+    .mid {
+      font-size: .65rem;
+      color: var(--muted);
+      font-family: 'Syne Mono', monospace;
+      letter-spacing: .05em;
+      transition: color .3s
+    }
+
+    .mrole {
+      font-size: .65rem;
+      color: var(--p1);
+      margin-top: .8rem;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 700;
+      transition: color .3s
+    }
+
+    /* TIMELINE */
+    .tl-wrap {
+      position: relative;
+      max-width: 800px;
+      margin: 4rem auto 0;
+      padding-left: 2.5rem
+    }
+
+    .tl-track {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--border)
+    }
+
+    .tli {
+      display: flex;
+      gap: 2rem;
+      margin-bottom: 3rem;
+      opacity: 0;
+      transform: translateX(-20px);
+      transition: all .6s ease
+    }
+
+    .tli.vis {
+      opacity: 1;
+      transform: translateX(0)
+    }
+
+    .tl-dot {
+      width: 48px;
+      height: 48px;
+      flex-shrink: 0;
+      border-radius: 50%;
+      background: var(--text);
+      color: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      position: relative;
+      z-index: 1;
+      margin-left: -49px;
+      box-shadow: 0 0 0 6px var(--bg)
+    }
+
+    .tli:hover .tl-dot {
+      background: var(--p1)
+    }
+
+    .tl-body {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 2rem;
+      flex: 1;
+      box-shadow: 0 5px 15px var(--shadow)
+    }
+
+    .tl-phase {
+      font-family: 'Syne Mono', monospace;
+      font-size: .65rem;
+      color: var(--p1);
+      letter-spacing: .2em;
+      margin-bottom: .5rem;
+      font-weight: 700
+    }
+
+    .tl-head {
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: .8rem;
+      color: var(--text)
+    }
+
+    .tl-desc {
+      font-size: .95rem;
+      color: var(--muted);
+      line-height: 1.7
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 4rem 1.5rem;
+      text-align: center;
+      background: var(--bg2)
+    }
+
+    .f-logo {
+      font-family: 'Syne Mono', monospace;
+      font-size: 1.8rem;
+      font-weight: 700;
+      letter-spacing: .2em;
+      color: var(--text);
+      margin-bottom: .8rem
+    }
+
+    .f-logo span {
+      color: var(--p1)
+    }
+
+    .f-sub {
+      font-size: .85rem;
+      color: var(--muted);
+      letter-spacing: .08em;
+      margin-top: .5rem;
+      font-weight: 500
+    }
+
+    .f-credits {
+      margin-top: 2rem;
+      font-size: .65rem;
+      color: var(--muted);
+      letter-spacing: .1em;
+      font-family: 'Syne Mono', monospace;
+      opacity: .6
+    }
+
+    /* UTILS */
+    @keyframes fadeUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity .7s ease, transform .7s ease
+    }
+
+    .reveal.vis {
+      opacity: 1;
+      transform: translateY(0)
+    }
+
+    /* MOBILE RESPONSIVENESS */
+    @media(max-width:900px) {
+      .team-grid {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .specs-grid {
+        grid-template-columns: repeat(2, 1fr)
+      }
+    }
+
+    @media(max-width:768px) {
+      nav {
+        padding: 1rem 1.5rem;
+        backdrop-filter: none !important;
+        background: var(--bg2) !important;
+      }
+
+      body::before {
+        display: none !important;
+      }
+
+      /* Disable heavy radial painting on mobile */
+      .nav-links {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        position: fixed;
+        top: 66px;
+        left: 0;
+        right: 0;
+        background: var(--bg2);
+        padding: 2.5rem 1.5rem;
+        gap: 2rem;
+        border-bottom: 1px solid var(--border);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+        transition: all .3s ease;
+        opacity: 0
+      }
+
+      .nav-links.open {
+        display: flex;
+        opacity: 1
+      }
+
+      .nav-toggle {
+        display: flex
+      }
+
+      #hero {
+        padding-top: 7rem
+      }
+
+      h1.hero-title {
+        font-size: clamp(2.5rem, 12vw, 4rem)
+      }
+
+      .hero-btns {
+        flex-direction: column;
+        width: 100%
+      }
+
+      .btn-p,
+      .btn-o {
+        width: 100%;
+        text-align: center
+      }
+
+      .model-wrap {
+        height: 40vh;
+        min-height: 300px
+      }
+
+      .cbtn {
+        flex: 1 1 calc(50% - .5rem);
+        text-align: center;
+        font-size: .65rem
+      }
+
+      section {
+        padding: 4rem 1.5rem
+      }
+
+      .feats-container {
+        padding: 4rem 1.5rem
+      }
+
+      .team-intro {
+        flex-direction: column;
+        align-items: flex-start
+      }
+
+      .tl-wrap {
+        padding-left: 1.5rem
+      }
+
+      .tl-dot {
+        width: 36px;
+        height: 36px;
+        margin-left: -33px;
+        font-size: .9rem
+      }
+
+      .tli {
+        gap: 1rem
+      }
+
+      .tl-body {
+        padding: 1.5rem
+      }
+    }
+
+    @media(max-width:480px) {
+      .team-grid {
+        grid-template-columns: 1fr
+      }
+
+      .specs-grid {
+        grid-template-columns: 1fr;
+        gap: 0;
+        border-bottom: none
+      }
+
+      .spec-card {
+        border-bottom: 1px solid var(--border)
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<nav>
-  <div class="logo">SKY<span>WORKS</span></div>
-  <ul class="nav-links" id="navL">
-    <li><a href="#hero">Home</a></li>
-    <li><a href="#model-section">Model</a></li>
-    <li><a href="#specs">Specs</a></li>
-    <li><a href="#feats">Tech</a></li>
-    <li><a href="#team">Team</a></li>
-    <li><a href="#timeline">Roadmap</a></li>
-  </ul>
-  <button class="nav-toggle" id="navT" aria-label="Menu">
-    <span></span><span></span><span></span>
-  </button>
-</nav>
+  <nav>
+    <div class="logo">SKY<span>WORKS</span></div>
+    <ul class="nav-links" id="navL">
+      <li><a href="#hero">Home</a></li>
+      <li><a href="#model-section">Model</a></li>
+      <li><a href="#specs">Specs</a></li>
+      <li><a href="#feats">Tech</a></li>
+      <li><a href="#team">Team</a></li>
+      <li><a href="#timeline">Roadmap</a></li>
+    </ul>
+    <button class="nav-toggle" id="navT" aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
 
-<section id="hero">
-  <div class="badge"><span class="badge-dot"></span> Next-Gen Urban Mobility</div>
-  <h1 class="hero-title">
-    THE FUTURE<br>
-    <span class="ht-accent">TAKES FLIGHT</span>
-  </h1>
-  <p class="hero-sub">Sky Works is redefining urban transport with autonomous electric air taxis. Beautiful design meets zero emissions and infinite sky.</p>
-  <div class="hero-btns">
-    <a href="#model-section" class="btn-p">View SW-1 Prototype</a>
-    <a href="#team" class="btn-o">Meet The Team</a>
-  </div>
-</section>
+  <section id="hero">
+    <div class="badge"><span class="badge-dot"></span> Next-Gen Urban Mobility</div>
+    <h1 class="hero-title">
+      THE FUTURE<br>
+      <span class="ht-accent">TAKES FLIGHT</span>
+    </h1>
+    <p class="hero-sub">Sky Works is redefining urban transport with autonomous electric air taxis. Beautiful design
+      meets zero emissions and infinite sky.</p>
+    <div class="hero-btns">
+      <a href="#model-section" class="btn-p">View SW-1 Prototype</a>
+      <a href="#team" class="btn-o">Meet The Team</a>
+    </div>
+  </section>
 
-<!-- 3D MODEL -->
-<section id="model-section">
-  <div class="center reveal">
-    <div class="eyebrow">// Interactive 3D</div>
-    <h2 class="sec-title">SW-1 Prototype</h2>
-    <p class="sec-sub" style="margin:0 auto 2rem">Touch/drag to rotate &middot; Scroll/pinch to zoom</p>
-  </div>
-  <div class="model-wrap reveal" id="modelWrap">
-    <canvas id="c3d"></canvas>
-    <div class="hud-corner tl"></div>
-    <div class="hud-corner tr"></div>
-    <div class="hud-corner bl"></div>
-    <div class="hud-corner br"></div>
-    <div class="hud-top">SW-1 ALPHA</div>
-    <div class="model-status" id="modelStatus">SYS: ONLINE</div>
-  </div>
-  <div class="mctrl">
-    <button class="cbtn on" id="bRot">⟳ Auto Rotate</button>
-    <button class="cbtn" id="bWire">⬡ Wireframe</button>
-    <button class="cbtn" id="bTop">↑ Top View</button>
-    <button class="cbtn" id="bSide">→ Side View</button>
-    <button class="cbtn" id="bRst">⌂ Reset</button>
-  </div>
-</section>
+  <!-- 3D MODEL -->
+  <section id="model-section">
+    <div class="center reveal">
+      <div class="eyebrow">// Interactive 3D</div>
+      <h2 class="sec-title">SW-1 Prototype</h2>
+      <p class="sec-sub" style="margin:0 auto 2rem">Touch/drag to rotate &middot; Scroll/pinch to zoom</p>
+    </div>
+    <div class="model-wrap reveal" id="modelWrap">
+      <canvas id="c3d"></canvas>
+      <div class="hud-corner tl"></div>
+      <div class="hud-corner tr"></div>
+      <div class="hud-corner bl"></div>
+      <div class="hud-corner br"></div>
+      <div class="hud-top">SW-1 ALPHA</div>
+      <div class="model-status" id="modelStatus">SYS: ONLINE</div>
+    </div>
+    <div class="mctrl">
+      <button class="cbtn on" id="bRot">⟳ Auto Rotate</button>
+      <button class="cbtn" id="bWire">⬡ Wireframe</button>
+      <button class="cbtn" id="bTop">↑ Top View</button>
+      <button class="cbtn" id="bSide">→ Side View</button>
+      <button class="cbtn" id="bRst">⌂ Reset</button>
+    </div>
+  </section>
 
-<!-- SPECS -->
-<section id="specs">
-  <div class="reveal">
-    <div class="eyebrow">// Performance</div>
-    <h2 class="sec-title">Tech Specs</h2>
-  </div>
-  <div class="specs-grid">
-    <div class="spec-card reveal"><div class="spec-icon"><i class="ph ph-lightning"></i></div><div class="spec-num" style="font-size: 2.3rem; margin-top: 0.5rem;">60-100</div><div class="spec-unit">km/h</div><div class="spec-label">Max Speed</div></div>
-    <div class="spec-card reveal"><div class="spec-icon"><i class="ph ph-timer"></i></div><div class="spec-num">25</div><div class="spec-unit">min</div><div class="spec-label">Flight Time</div></div>
-    <div class="spec-card reveal"><div class="spec-icon"><i class="ph ph-user"></i></div><div class="spec-num">1</div><div class="spec-unit">PAX (85kg)</div><div class="spec-label">Capacity</div></div>
-    <div class="spec-card reveal"><div class="spec-icon"><i class="ph ph-leaf"></i></div><div class="spec-num">0</div><div class="spec-unit">g CO₂</div><div class="spec-label">Emissions</div></div>
-    <div class="spec-card reveal"><div class="spec-icon"><i class="ph ph-wind"></i></div><div class="spec-num">8×2</div><div class="spec-unit">rotors</div><div class="spec-label">Propulsion</div></div>
-    <div class="spec-card reveal"><div class="spec-icon"><i class="ph ph-package"></i></div><div class="spec-num">160</div><div class="spec-unit">kg</div><div class="spec-label">Max Payload</div></div>
-  </div>
-</section>
-
-<!-- FEATURES -->
-<div class="feats-container" id="feats">
-  <div class="feats-wrap">
+  <!-- SPECS -->
+  <section id="specs">
     <div class="reveal">
-      <div class="eyebrow">// Engineering</div>
-      <h2 class="sec-title">Built Different</h2>
-      <p class="sec-sub">Every system engineered from first principles — no compromises, no shortcuts.</p>
+      <div class="eyebrow">// Performance</div>
+      <h2 class="sec-title">Tech Specs</h2>
     </div>
-    <div class="feats-grid">
-      <div class="feat reveal"><div class="feat-num">01 / NAVIGATION</div><div class="feat-icon"><i class="ph ph-brain"></i></div><div class="feat-title">Autonomous AI Nav</div><div class="feat-desc">Real-time obstacle detection, weather adaptation, and predictive path optimization via onboard edge AI.</div></div>
-      <div class="feat reveal"><div class="feat-num">02 / SECURITY</div><div class="feat-icon"><i class="ph ph-lock-key"></i></div><div class="feat-title">Encrypted Comms</div><div class="feat-desc">AES-256 encrypted aircraft-to-ground comms. Zero single points of failure in the communication stack.</div></div>
-      <div class="feat reveal"><div class="feat-num">03 / POWER</div><div class="feat-icon"><i class="ph ph-battery-charging"></i></div><div class="feat-title">Solid-State Battery</div><div class="feat-desc">Next-gen solid-state cells deliver 2× energy density vs Li-ion, with full thermal runaway immunity.</div></div>
-      <div class="feat reveal"><div class="feat-num">04 / SAFETY</div><div class="feat-icon"><i class="ph ph-arrows-clockwise"></i></div><div class="feat-title">Redundant Systems</div><div class="feat-desc">Triple-redundant flight computers, dual power buses, distributed rotor control — no single-point failure.</div></div>
-      <div class="feat reveal"><div class="feat-num">05 / NETWORK</div><div class="feat-icon"><i class="ph ph-graph"></i></div><div class="feat-title">Mesh UTM Network</div><div class="feat-desc">Integrated Urban Traffic Management via low-latency mesh. Fleet-wide situational awareness in real time.</div></div>
-      <div class="feat reveal"><div class="feat-num">06 / STRUCTURE</div><div class="feat-icon"><i class="ph ph-hexagon"></i></div><div class="feat-title">Carbon Fibre Airframe</div><div class="feat-desc">Monocoque carbon chassis — 40% lighter than aluminium with superior fatigue and impact resistance.</div></div>
+    <div class="specs-grid">
+      <div class="spec-card reveal">
+        <div class="spec-icon"><i class="ph ph-lightning"></i></div>
+        <div class="spec-num" style="font-size: 2.3rem; margin-top: 0.5rem;">60-100</div>
+        <div class="spec-unit">km/h</div>
+        <div class="spec-label">Max Speed</div>
+      </div>
+      <div class="spec-card reveal">
+        <div class="spec-icon"><i class="ph ph-timer"></i></div>
+        <div class="spec-num">25</div>
+        <div class="spec-unit">min</div>
+        <div class="spec-label">Flight Time</div>
+      </div>
+      <div class="spec-card reveal">
+        <div class="spec-icon"><i class="ph ph-user"></i></div>
+        <div class="spec-num">1</div>
+        <div class="spec-unit">PAX (85kg)</div>
+        <div class="spec-label">Capacity</div>
+      </div>
+      <div class="spec-card reveal">
+        <div class="spec-icon"><i class="ph ph-leaf"></i></div>
+        <div class="spec-num">0</div>
+        <div class="spec-unit">g CO₂</div>
+        <div class="spec-label">Emissions</div>
+      </div>
+      <div class="spec-card reveal">
+        <div class="spec-icon"><i class="ph ph-wind"></i></div>
+        <div class="spec-num">8×2</div>
+        <div class="spec-unit">rotors</div>
+        <div class="spec-label">Propulsion</div>
+      </div>
+      <div class="spec-card reveal">
+        <div class="spec-icon"><i class="ph ph-package"></i></div>
+        <div class="spec-num">160</div>
+        <div class="spec-unit">kg</div>
+        <div class="spec-label">Max Payload</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <div class="feats-container" id="feats">
+    <div class="feats-wrap">
+      <div class="reveal">
+        <div class="eyebrow">// Engineering</div>
+        <h2 class="sec-title">Built Different</h2>
+        <p class="sec-sub">Every system engineered from first principles — no compromises, no shortcuts.</p>
+      </div>
+      <div class="feats-grid">
+        <div class="feat reveal">
+          <div class="feat-num">01 / NAVIGATION</div>
+          <div class="feat-icon"><i class="ph ph-brain"></i></div>
+          <div class="feat-title">Autonomous AI Nav</div>
+          <div class="feat-desc">Real-time obstacle detection, weather adaptation, and predictive path optimization via
+            onboard edge AI.</div>
+        </div>
+        <div class="feat reveal">
+          <div class="feat-num">02 / SECURITY</div>
+          <div class="feat-icon"><i class="ph ph-lock-key"></i></div>
+          <div class="feat-title">Encrypted Comms</div>
+          <div class="feat-desc">AES-256 encrypted aircraft-to-ground comms. Zero single points of failure in the
+            communication stack.</div>
+        </div>
+        <div class="feat reveal">
+          <div class="feat-num">03 / POWER</div>
+          <div class="feat-icon"><i class="ph ph-battery-charging"></i></div>
+          <div class="feat-title">Solid-State Battery</div>
+          <div class="feat-desc">Next-gen solid-state cells deliver 2× energy density vs Li-ion, with full thermal
+            runaway immunity.</div>
+        </div>
+        <div class="feat reveal">
+          <div class="feat-num">04 / SAFETY</div>
+          <div class="feat-icon"><i class="ph ph-arrows-clockwise"></i></div>
+          <div class="feat-title">Redundant Systems</div>
+          <div class="feat-desc">Triple-redundant flight computers, dual power buses, distributed rotor control — no
+            single-point failure.</div>
+        </div>
+        <div class="feat reveal">
+          <div class="feat-num">05 / NETWORK</div>
+          <div class="feat-icon"><i class="ph ph-graph"></i></div>
+          <div class="feat-title">Mesh UTM Network</div>
+          <div class="feat-desc">Integrated Urban Traffic Management via low-latency mesh. Fleet-wide situational
+            awareness in real time.</div>
+        </div>
+        <div class="feat reveal">
+          <div class="feat-num">06 / STRUCTURE</div>
+          <div class="feat-icon"><i class="ph ph-hexagon"></i></div>
+          <div class="feat-title">Carbon Fibre Airframe</div>
+          <div class="feat-desc">Monocoque carbon chassis — 40% lighter than aluminium with superior fatigue and impact
+            resistance.</div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
 
-<!-- TEAM -->
-<section id="team">
-  <div class="team-intro">
-    <div class="reveal">
-      <div class="eyebrow">// The Builders</div>
-      <h2 class="sec-title">Team Sky Works</h2>
+  <!-- TEAM -->
+  <section id="team">
+    <div class="team-intro">
+      <div class="reveal">
+        <div class="eyebrow">// The Builders</div>
+        <h2 class="sec-title">Team Sky Works</h2>
+      </div>
+      <p class="sec-sub reveal" style="max-width:320px;margin:0">Nine engineers. One mission. Redefine the future of
+        urban mobility.</p>
     </div>
-    <p class="sec-sub reveal" style="max-width:320px;margin:0">Nine engineers. One mission. Redefine the future of urban mobility.</p>
-  </div>
-  <div class="team-grid">
-    <div class="mcard reveal"><div class="avatar"><img src="photos/Manikanta.jpeg" alt="Manikanta"></div><div class="mname">Manikanta</div><div class="mid">AP22110020138</div><div class="mrole">Team Lead</div></div>
-    <div class="mcard reveal"><div class="avatar"><img src="photos/Ajit_kumar.jpeg" alt="Ajit Kumar"></div><div class="mname">Ajit Kumar</div><div class="mid">AP22110020059</div><div class="mrole">Control Systems</div></div>
-    <div class="mcard reveal"><div class="avatar"><img src="photos/sai sankar.jpeg" alt="Sai Sankar"></div><div class="mname">Sai Sankar</div><div class="mid">AP23110010778</div><div class="mrole">Software</div></div>
-    <div class="mcard reveal"><div class="avatar"><img src="photos/ch_manikanta.jpeg" alt="Ch. Manikanta"></div><div class="mname">Ch. Manikanta</div><div class="mid">AP24110020076</div><div class="mrole">Aerodynamics</div></div>
-    <div class="mcard reveal"><div class="avatar"><img src="photos/Manoj.jpeg" alt="K. Manoj Kumar"></div><div class="mname">K. Manoj Kumar</div><div class="mid">AP24110020071</div><div class="mrole">Propulsion</div></div>
-    <div class="mcard reveal"><div class="avatar"><img src="photos/deekshith.jpeg" alt="J. Sai Deekshith"></div><div class="mname">J. Sai Deekshith</div><div class="mid">AP24110020097</div><div class="mrole">Avionics</div></div>
-    <div class="mcard reveal"><div class="avatar"><img src="photos/Aswith.jpeg" alt="Ashwith"></div><div class="mname">Ashwith</div><div class="mid">AP24110020010</div><div class="mrole">Structures</div></div>
-    <div class="mcard reveal"><div class="avatar"><img src="photos/Ramprasad.jpeg" alt="B. Ramprasad Reddy"></div><div class="mname">B. Ramprasad Reddy</div><div class="mid">AP24110020096</div><div class="mrole">Engineer</div></div>
-    <div class="mcard reveal"><div class="avatar"><img src="photos/agastya pandey.jpeg" alt="Agastya Pandey"></div><div class="mname">Agastya Pandey</div><div class="mid">AP25110070258</div><div class="mrole">AI Systems</div></div>
-    <div class="mcard reveal"><div class="avatar"><img src="photos/sanjay.jpeg" alt="Sanjay"></div><div class="mname">Sanjay</div><div class="mid">AP24110020043</div><div class="mrole">Electronics</div></div>
-  </div>
-  
-  <div class="guide-banner reveal" style="margin-top: 3rem; background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 2.5rem; text-align: center; box-shadow: 0 10px 30px var(--shadow);">
-    <div class="eyebrow" style="justify-content: center; margin-bottom: 0.5rem;">// Project Guide</div>
-    <h3 style="font-family: 'Rajdhani', sans-serif; font-size: 1.8rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem;">Dr. Pradyut Kumar Sanki</h3>
-    <div style="font-size: 0.85rem; color: var(--p1); letter-spacing: 0.15em; text-transform: uppercase; font-family: 'Rajdhani', sans-serif; font-weight: 700; margin-bottom: 0.4rem;">Associate Professor</div>
-    <div style="font-size: 0.9rem; color: var(--muted); line-height: 1.6; font-weight: 500;">ECE Department<br>SRM University-AP</div>
-  </div>
-</section>
+    <div class="team-grid">
+      <div class="mcard reveal">
+        <div class="avatar"><img src="photos/Manikanta.jpeg" alt="Manikanta"></div>
+        <div class="mname">Manikanta</div>
+        <div class="mid">AP22110020138</div>
+        <div class="mrole">Team Lead</div>
+      </div>
+      <div class="mcard reveal">
+        <div class="avatar"><img src="photos/Ajit_kumar.jpeg" alt="Ajit Kumar"></div>
+        <div class="mname">Ajit Kumar</div>
+        <div class="mid">AP22110020059</div>
+        <div class="mrole">Co Lead</div>
+      </div>
+      <div class="mcard reveal">
+        <div class="avatar"><img src="photos/sai sankar.jpeg" alt="Sai Sankar"></div>
+        <div class="mname">Sai Sankar</div>
+        <div class="mid">AP23110010778</div>
+        <div class="mrole">Software Developer</div>
+      </div>
+      <div class="mcard reveal">
+        <div class="avatar"><img src="photos/ch_manikanta.jpeg" alt="Ch. Manikanta"></div>
+        <div class="mname">Ch. Manikanta</div>
+        <div class="mid">AP24110020076</div>
+        <div class="mrole">Testing Engineer</div>
+      </div>
+      <div class="mcard reveal">
+        <div class="avatar"><img src="photos/Manoj.jpeg" alt="K. Manoj Kumar"></div>
+        <div class="mname">K. Manoj Kumar</div>
+        <div class="mid">AP24110020071</div>
+        <div class="mrole">Power Electronics</div>
+      </div>
+      <div class="mcard reveal">
+        <div class="avatar"><img src="photos/deekshith.jpeg" alt="J. Sai Deekshith"></div>
+        <div class="mname">J. Sai Deekshith</div>
+        <div class="mid">AP24110020097</div>
+        <div class="mrole">Avionics</div>
+      </div>
+      <div class="mcard reveal">
+        <div class="avatar"><img src="photos/Aswith.jpeg" alt="Ashwith"></div>
+        <div class="mname">Ashwith</div>
+        <div class="mid">AP24110020010</div>
+        <div class="mrole">Avionics</div>
+      </div>
+      <div class="mcard reveal">
+        <div class="avatar"><img src="photos/Ramprasad.jpeg" alt="B. Ramprasad Reddy"></div>
+        <div class="mname">B. Ramprasad Reddy</div>
+        <div class="mid">AP24110020096</div>
+        <div class="mrole">Embedded Systems</div>
+      </div>
+      <div class="mcard reveal">
+        <div class="avatar"><img src="photos/agastya pandey.jpeg" alt="Agastya Pandey"></div>
+        <div class="mname">Agastya Pandey</div>
+        <div class="mid">AP25110070258</div>
+        <div class="mrole">Software Developer</div>
+      </div>
+      <div class="mcard reveal">
+        <div class="avatar"><img src="photos/sanjay.jpeg" alt="Sanjay"></div>
+        <div class="mname">Sanjay</div>
+        <div class="mid">AP24110020043</div>
+        <div class="mrole">CAD Desinger</div>
+      </div>
+    </div>
 
-<!-- TIMELINE -->
-<section id="timeline">
-  <div class="center reveal">
-    <div class="eyebrow">// Roadmap</div>
-    <h2 class="sec-title">Flight Plan</h2>
-  </div>
-  <div class="tl-wrap">
-    <div class="tl-track"></div>
-    <div class="tli"><div class="tl-dot"><i class="ph ph-microscope"></i></div><div class="tl-body"><div class="tl-phase">PHASE 01 · 2024</div><div class="tl-head">Research &amp; Concept</div><div class="tl-desc">Feasibility studies, aerodynamic modelling, and initial team formation. System requirements defined.</div></div></div>
-    <div class="tli"><div class="tl-dot"><i class="ph ph-wrench"></i></div><div class="tl-body"><div class="tl-phase">PHASE 02 · 2025</div><div class="tl-head">Prototype Dev</div><div class="tl-desc">SW-1 frame fabricated, propulsion integrated, onboard avionics stack completed. Ground tests initiated.</div></div></div>
-    <div class="tli"><div class="tl-dot"><i class="ph ph-airplane-tilt"></i></div><div class="tl-body"><div class="tl-phase">PHASE 03 · 2025–26</div><div class="tl-head">Flight Testing</div><div class="tl-desc">Controlled flight testing, AI navigation calibration, safety validation against DGCA standards.</div></div></div>
-    <div class="tli"><div class="tl-dot"><i class="ph ph-certificate"></i></div><div class="tl-body"><div class="tl-phase">PHASE 04 · 2026+</div><div class="tl-head">Certification</div><div class="tl-desc">Type certification, fleet production planning, and city-level pilot programme launches across India.</div></div></div>
-  </div>
-</section>
+    <div class="guide-banner reveal"
+      style="margin-top: 3rem; background: var(--bg2); border: 1px solid var(--border); border-radius: 12px; padding: 2.5rem; text-align: center; box-shadow: 0 10px 30px var(--shadow);">
+      <div class="eyebrow" style="justify-content: center; margin-bottom: 0.5rem;">// Project Guide</div>
+      <h3
+        style="font-family: 'Rajdhani', sans-serif; font-size: 1.8rem; font-weight: 700; color: var(--text); margin-bottom: 0.5rem;">
+        Dr. Pradyut Kumar Sanki</h3>
+      <div
+        style="font-size: 0.85rem; color: var(--p1); letter-spacing: 0.15em; text-transform: uppercase; font-family: 'Rajdhani', sans-serif; font-weight: 700; margin-bottom: 0.4rem;">
+        Associate Professor</div>
+      <div style="font-size: 0.9rem; color: var(--muted); line-height: 1.6; font-weight: 500;">ECE Department<br>SRM
+        University-AP</div>
+    </div>
+  </section>
 
-<footer>
-  <div class="f-logo">SKY<span>WORKS</span></div>
-  <div class="f-sub">SW-1 Air Taxi · Engineering Excellence</div>
-  <div class="f-credits">© 2026 SKY WORKS · CLASSIFIED PROTOTYPE · UNAUTHORIZED REPRODUCTION PROHIBITED</div>
-</footer>
+  <!-- TIMELINE -->
+  <section id="timeline">
+    <div class="center reveal">
+      <div class="eyebrow">// Roadmap</div>
+      <h2 class="sec-title">Flight Plan</h2>
+    </div>
+    <div class="tl-wrap">
+      <div class="tl-track"></div>
+      <div class="tli">
+        <div class="tl-dot"><i class="ph ph-microscope"></i></div>
+        <div class="tl-body">
+          <div class="tl-phase">PHASE 01 · 2024</div>
+          <div class="tl-head">Research &amp; Concept</div>
+          <div class="tl-desc">Feasibility studies, aerodynamic modelling, and initial team formation. System
+            requirements defined.</div>
+        </div>
+      </div>
+      <div class="tli">
+        <div class="tl-dot"><i class="ph ph-wrench"></i></div>
+        <div class="tl-body">
+          <div class="tl-phase">PHASE 02 · 2025</div>
+          <div class="tl-head">Prototype Dev</div>
+          <div class="tl-desc">SW-1 frame fabricated, propulsion integrated, onboard avionics stack completed. Ground
+            tests initiated.</div>
+        </div>
+      </div>
+      <div class="tli">
+        <div class="tl-dot"><i class="ph ph-airplane-tilt"></i></div>
+        <div class="tl-body">
+          <div class="tl-phase">PHASE 03 · 2025–26</div>
+          <div class="tl-head">Flight Testing</div>
+          <div class="tl-desc">Controlled flight testing, AI navigation calibration, safety validation against DGCA
+            standards.</div>
+        </div>
+      </div>
+      <div class="tli">
+        <div class="tl-dot"><i class="ph ph-certificate"></i></div>
+        <div class="tl-body">
+          <div class="tl-phase">PHASE 04 · 2026+</div>
+          <div class="tl-head">Certification</div>
+          <div class="tl-desc">Type certification, fleet production planning, and city-level pilot programme launches
+            across India.</div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-<script>
-(function(){
-'use strict';
-/* --- PROTECTION LAYER --- */
-document.getElementById('c3d').addEventListener('contextmenu',e=>e.preventDefault());
-document.getElementById('modelWrap').addEventListener('contextmenu',e=>e.preventDefault());
-document.addEventListener('keydown',e=>{
-  if((e.ctrlKey||e.metaKey)&&(e.key==='s'||e.key==='u'))e.preventDefault();
-  if(e.key==='F12'||(e.ctrlKey&&e.shiftKey&&(e.key==='I'||e.key==='J'||e.key==='C')))e.preventDefault();
-});
+  <footer>
+    <div class="f-logo">SKY<span>WORKS</span></div>
+    <div class="f-sub">SW-1 Air Taxi · Engineering Excellence</div>
+    <div class="f-credits">© 2026 SKY WORKS · CLASSIFIED PROTOTYPE · UNAUTHORIZED REPRODUCTION PROHIBITED</div>
+  </footer>
 
-// Agressive DevTools Lock
-const _trap=()=>{debugger;};
-setInterval(_trap,100);
-console.log(Object.defineProperties(new Error,{toString:{value(){_trap()}},message:{get(){_trap()}}}));
+  <script>
+    (function () {
+      'use strict';
+      /* --- PROTECTION LAYER --- */
+      document.getElementById('c3d').addEventListener('contextmenu', e => e.preventDefault());
+      document.getElementById('modelWrap').addEventListener('contextmenu', e => e.preventDefault());
+      document.addEventListener('keydown', e => {
+        if ((e.ctrlKey || e.metaKey) && (e.key === 's' || e.key === 'u')) e.preventDefault();
+        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && (e.key === 'I' || e.key === 'J' || e.key === 'C'))) e.preventDefault();
+      });
 
-/* --- NAV TOGGLE (MOBILE) --- */
-const navT=document.getElementById('navT');
-const navL=document.getElementById('navL');
-navT.addEventListener('click',()=>{
-  navT.classList.toggle('open');
-  navL.classList.toggle('open');
-});
-document.querySelectorAll('#navL a').forEach(a=>{
-  a.addEventListener('click',()=>{
-    navT.classList.remove('open');
-    navL.classList.remove('open');
-  });
-});
+      // Agressive DevTools Lock
+      const _trap = () => { debugger; };
+      setInterval(_trap, 100);
+      console.log(Object.defineProperties(new Error, { toString: { value() { _trap() } }, message: { get() { _trap() } } }));
 
-/* --- REVEAL EFFECTS --- */
-const io=new IntersectionObserver(en=>{en.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis')});},{threshold:.08});
-document.querySelectorAll('.reveal,.tli').forEach(el=>io.observe(el));
+      /* --- NAV TOGGLE (MOBILE) --- */
+      const navT = document.getElementById('navT');
+      const navL = document.getElementById('navL');
+      navT.addEventListener('click', () => {
+        navT.classList.toggle('open');
+        navL.classList.toggle('open');
+      });
+      document.querySelectorAll('#navL a').forEach(a => {
+        a.addEventListener('click', () => {
+          navT.classList.remove('open');
+          navL.classList.remove('open');
+        });
+      });
 
-/* --- THREE.JS MODEL --- */
-(function(){
-  const _tok=Math.random().toString(36).slice(2);
-  const cv=document.getElementById('c3d');
-  const pw=cv.parentElement;
-  
-  // Restoring anti-aliasing and boosting pixel ratio for high-quality rendering
-  const rnd=new THREE.WebGLRenderer({canvas:cv,antialias:true,alpha:true,preserveDrawingBuffer:false,powerPreference:"high-performance"});
-  rnd.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-  rnd.shadowMap.enabled=false;
-  
-  function sz(){
-    const w=pw.clientWidth,h=pw.clientHeight;
-    rnd.setSize(w,h);
-    cam.aspect=w/h;
-    cam.updateProjectionMatrix();
-  }
-  
-  const scene=new THREE.Scene();
-  const cam=new THREE.PerspectiveCamera(42,pw.clientWidth/pw.clientHeight,.1,100);
-  cam.position.set(0,2.5,7);cam.lookAt(0,0,0);
-  sz();
-  
-  // ENHANCED LIGHTS for PBR Materials
-  scene.add(new THREE.AmbientLight(0xffffff, 1.8)); 
-  
-  const hemiLight = new THREE.HemisphereLight(0xffffff, 0xebefe6, 1.5);
-  hemiLight.position.set(0, 10, 0);
-  scene.add(hemiLight);
+      /* --- REVEAL EFFECTS --- */
+      const io = new IntersectionObserver(en => { en.forEach(e => { if (e.isIntersecting) e.target.classList.add('vis') }); }, { threshold: .08 });
+      document.querySelectorAll('.reveal,.tli').forEach(el => io.observe(el));
 
-  const sl = new THREE.DirectionalLight(0xffffff, 2.8);
-  sl.position.set(5, 10, 5);
-  scene.add(sl);
-  
-  const rl = new THREE.DirectionalLight(0xff3a1a, 1.2); // Orange rim light boosted
-  rl.position.set(-5, 3, -4); 
-  scene.add(rl);
-  
-  const fl = new THREE.DirectionalLight(0x88bbee, 1.0); // Blue fill light boosted
-  fl.position.set(0, -3, 5); 
-  scene.add(fl);
-  
-  // ==========================================
-  // ASSEMBLE (Load GLB model)
-  // ==========================================
-  const taxi=new THREE.Group();
-  scene.add(taxi);
-  const modelProps=[];
-  const propNames=['Body1.173','Body1.172','Body1.170','Body1.167','Body1.168','Body1.174','Body1.161','Body1.160','Body1.164','Body1.165','Body1.158','Body1.159','Body1.156','Body1.157','Body1.163','Body1.162'];
+      /* --- THREE.JS MODEL --- */
+      (function () {
+        const _tok = Math.random().toString(36).slice(2);
+        const cv = document.getElementById('c3d');
+        const pw = cv.parentElement;
 
-  document.getElementById('modelStatus').textContent = 'SYS: LOADING...';
-  
-  // Use GLTFLoader with DRACOLoader for heavily compressed geometry
-  const loader = new THREE.GLTFLoader();
-  const dracoLoader = new THREE.DRACOLoader();
-  dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
-  loader.setDRACOLoader(dracoLoader);
-  
-  loader.load('taxi.glb', g => {
-    // Auto-center the model based on its bounding box
-    const box = new THREE.Box3().setFromObject(g.scene);
-    const size = box.getSize(new THREE.Vector3()).length();
-    const center = box.getCenter(new THREE.Vector3());
-    
-    console.log("GLTF Loaded successfully");
-    console.log("Raw size:", size, "Center:", center);
-    
-    // Handle edge case if the 3D model bounding box is infinitely large or 0
-    let finalScale = 1.5;
-    if (isFinite(size) && size > 0 && size < 100000) {
-      finalScale = 5.0 / size; 
-      g.scene.scale.setScalar(finalScale);
-      g.scene.position.x += (g.scene.position.x - center.x);
-      g.scene.position.y += (g.scene.position.y - center.y) - 0.2;
-      g.scene.position.z += (g.scene.position.z - center.z);
-    } else {
-      g.scene.scale.setScalar(1.5);
-      g.scene.position.y = -0.3;
-    }
-    console.log("Applied Scale:", finalScale, "Final Y Position:", g.scene.position.y);
+        // Restoring anti-aliasing and boosting pixel ratio for high-quality rendering
+        const rnd = new THREE.WebGLRenderer({ canvas: cv, antialias: true, alpha: true, preserveDrawingBuffer: false, powerPreference: "high-performance" });
+        rnd.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+        rnd.shadowMap.enabled = false;
 
-    const propNums = ['173','172','170','167','168','174','161','160','164','165','158','159','156','157','163','162'];
-
-    let meshCount = 0;
-    const rawProps = []; // Temporary array to hold the un-pivot-fixed elements
-    // Collect requested propeller meshes
-    g.scene.traverse(child => {
-      if (child.isMesh) {
-        meshCount++;
-        const isProp = propNums.some(pn => child.name.includes(pn));
-        if (isProp) {
-          if (!rawProps.includes(child)) rawProps.push(child);
-        } else if (child.parent && child.parent.type === 'Group' && propNums.some(pn => child.parent.name.includes(pn))) {
-          if (!rawProps.includes(child.parent)) rawProps.push(child.parent);
+        function sz() {
+          const w = pw.clientWidth, h = pw.clientHeight;
+          rnd.setSize(w, h);
+          cam.aspect = w / h;
+          cam.updateProjectionMatrix();
         }
-      }
-    });
 
-    taxi.add(g.scene);
-    
-    // Force a transform update to ensure bounding boxes map accurately
-    taxi.updateMatrixWorld(true);
+        const scene = new THREE.Scene();
+        const cam = new THREE.PerspectiveCamera(42, pw.clientWidth / pw.clientHeight, .1, 100);
+        cam.position.set(0, 2.5, 7); cam.lookAt(0, 0, 0);
+        sz();
 
-    // Fix pivot points: Exporters usually place the local origin of all objects at (0,0,0)
-    // This creates "orbiting" instead of "spinning". We solve this by adding a dynamic pivot.
-    rawProps.forEach(obj => {
-       const box = new THREE.Box3().setFromObject(obj);
-       const centerWorld = box.getCenter(new THREE.Vector3());
-       
-       const pivot = new THREE.Group();
-       obj.parent.add(pivot);
-       
-       // Map the world center into the parent's local space
-       pivot.parent.worldToLocal(centerWorld);
-       pivot.position.copy(centerWorld);
-       
-       // attach() preserves the visual world position while shifting its local coordinate math!
-       pivot.attach(obj);
-       modelProps.push(pivot);
-    });
-    
-    console.log("Total Meshes found:", meshCount);
-    console.log("Propeller Pivots re-centered and mapped:", modelProps.length);
+        // ENHANCED LIGHTS for PBR Materials
+        scene.add(new THREE.AmbientLight(0xffffff, 1.8));
 
-    document.getElementById('modelStatus').textContent = 'SYS: ONLINE';
-  }, undefined, err => {
-    console.error('Failed to load taxi.glb:', err);
-    document.getElementById('modelStatus').textContent = 'SYS: ERROR';
-    if (window.location.protocol === 'file:') {
-      alert("Browser Security Block (CORS): Browsers prevent loading 3D '.glb' files directly from a local 'file:///' path. Please use a local web server (like VS Code Live Server or 'python -m http.server') to view this file correctly.");
-    }
-  });
-  
-  // GRID (Subtle grey for light background)
-  const grid=new THREE.GridHelper(14,26,0xff3a1a,0xcccccc);
-  grid.position.y=-1.1;grid.material.transparent=true;grid.material.opacity=.4;
-  scene.add(grid);
-  
-  // STATE & INTERACTION
-  let autoRot=true,wire=false,drag=false,px=0,py=0,rY=Math.PI/4,rX=0.2;
-  
-  cv.addEventListener('mousedown',e=>{drag=true;px=e.clientX;py=e.clientY});
-  window.addEventListener('mouseup',()=>drag=false);
-  window.addEventListener('mousemove',e=>{if(!drag)return;rY+=(e.clientX-px)*.008;rX+=(e.clientY-py)*.005;rX=Math.max(-.8,Math.min(.8,rX));px=e.clientX;py=e.clientY;});
-  cv.addEventListener('touchstart',e=>{drag=true;px=e.touches[0].clientX;py=e.touches[0].clientY},{passive:true});
-  window.addEventListener('touchend',()=>drag=false);
-  window.addEventListener('touchmove',e=>{if(!drag)return;rY+=(e.touches[0].clientX-px)*.01;rX+=(e.touches[0].clientY-py)*.008;rX=Math.max(-.8,Math.min(.8,rX));px=e.touches[0].clientX;py=e.touches[0].clientY;},{passive:true});
-  cv.addEventListener('wheel',e=>{cam.position.z=Math.max(2.5,Math.min(12,cam.position.z+e.deltaY*.012));e.preventDefault();},{passive:false});
-  
-  // CONTROLS
-  const bR=document.getElementById('bRot');
-  bR.addEventListener('click',()=>{autoRot=!autoRot;bR.classList.toggle('on',autoRot);});
-  document.getElementById('bWire').addEventListener('click',function(){
-    wire=!wire;taxi.traverse(o=>{if(o.isMesh&&o.material&&!o.material.transparent)o.material.wireframe=wire;});
-    this.classList.toggle('on',wire);
-  });
-  document.getElementById('bTop').addEventListener('click',function(){cam.position.set(0,9,.1);cam.lookAt(0,0,0);this.classList.add('on');setTimeout(()=>this.classList.remove('on'),700);});
-  document.getElementById('bSide').addEventListener('click',function(){cam.position.set(7.5,1.5,0);cam.lookAt(0,0,0);this.classList.add('on');setTimeout(()=>this.classList.remove('on'),700);});
-  document.getElementById('bRst').addEventListener('click',()=>{cam.position.set(0,2.5,7);cam.lookAt(0,0,0);rY=Math.PI/4;rX=0.2;autoRot=true;bR.classList.add('on');wire=false;taxi.traverse(o=>{if(o.isMesh&&o.material)o.material.wireframe=false;});document.getElementById('bWire').classList.remove('on');});
-  
-  // HUD Status Update
-  const statEl=document.getElementById('modelStatus');
-  const stats=['SYS: ONLINE','RPM: 1240','PWR: 87%','ALT: 120M','NAV: ACTIVE'];
-  let si=0;setInterval(()=>{if(statEl.textContent!=='SYS: LOADING...')statEl.textContent=stats[si++%stats.length];},2200);
-  
-  // OPTIMIZATION: Pause heavy 3D rendering when the user scrolls past the canvas
-  let isVisible = true;
-  new IntersectionObserver(entries => {
-    isVisible = entries[0].isIntersecting;
-  }, { threshold: 0.0 }).observe(cv);
+        const hemiLight = new THREE.HemisphereLight(0xffffff, 0xebefe6, 1.5);
+        hemiLight.position.set(0, 10, 0);
+        scene.add(hemiLight);
 
-  let t=0;
-  let propSpeed=0.8; // Default fast propeller speed
-  const _render=()=>{
-    requestAnimationFrame(_render);
-    
-    // Completely skip GPU processing if the model is off-screen
-    if (!isVisible) return;
+        const sl = new THREE.DirectionalLight(0xffffff, 2.8);
+        sl.position.set(5, 10, 5);
+        scene.add(sl);
 
-    t+=.016;
-    
-    // Target speed interpolation (fast when idling, slow when touched/dragged)
-    const targetSpeed = drag ? 0.05 : 0.8;
-    propSpeed += (targetSpeed - propSpeed) * 0.1;
-    
-    // Rotate real loaded propellers
-    modelProps.forEach((r, idx) => {
-      // Alternate direction based on index if desired, but we can just use rotateY
-      const dir = (idx % 2 === 0) ? 1 : -1;
-      // Changing to rotateZ, as CAD models often use Z-up local coordinates, making local Z the visual 'Y' vector
-      r.rotateZ(propSpeed * dir);
-    });
+        const rl = new THREE.DirectionalLight(0xff3a1a, 1.2); // Orange rim light boosted
+        rl.position.set(-5, 3, -4);
+        scene.add(rl);
 
-    if(autoRot&&!drag)rY+=.006;
-    taxi.rotation.y=rY;taxi.rotation.x=rX;
-    taxi.position.y=Math.sin(t*1.5)*.08;
-    rnd.render(scene,cam);
-  };
-  _render();
-  window.addEventListener('resize',sz);
-  void _tok;
-})();
-})();
-</script>
+        const fl = new THREE.DirectionalLight(0x88bbee, 1.0); // Blue fill light boosted
+        fl.position.set(0, -3, 5);
+        scene.add(fl);
+
+        // ==========================================
+        // ASSEMBLE (Load GLB model)
+        // ==========================================
+        const taxi = new THREE.Group();
+        scene.add(taxi);
+        const modelProps = [];
+        const propNames = ['Body1.173', 'Body1.172', 'Body1.170', 'Body1.167', 'Body1.168', 'Body1.174', 'Body1.161', 'Body1.160', 'Body1.164', 'Body1.165', 'Body1.158', 'Body1.159', 'Body1.156', 'Body1.157', 'Body1.163', 'Body1.162'];
+
+        document.getElementById('modelStatus').textContent = 'SYS: LOADING...';
+
+        // Use GLTFLoader with DRACOLoader for heavily compressed geometry
+        const loader = new THREE.GLTFLoader();
+        const dracoLoader = new THREE.DRACOLoader();
+        dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
+        loader.setDRACOLoader(dracoLoader);
+
+        loader.load('taxi.glb', g => {
+          // Auto-center the model based on its bounding box
+          const box = new THREE.Box3().setFromObject(g.scene);
+          const size = box.getSize(new THREE.Vector3()).length();
+          const center = box.getCenter(new THREE.Vector3());
+
+          console.log("GLTF Loaded successfully");
+          console.log("Raw size:", size, "Center:", center);
+
+          // Handle edge case if the 3D model bounding box is infinitely large or 0
+          let finalScale = 1.5;
+          if (isFinite(size) && size > 0 && size < 100000) {
+            finalScale = 5.0 / size;
+            g.scene.scale.setScalar(finalScale);
+            g.scene.position.x += (g.scene.position.x - center.x);
+            g.scene.position.y += (g.scene.position.y - center.y) - 0.2;
+            g.scene.position.z += (g.scene.position.z - center.z);
+          } else {
+            g.scene.scale.setScalar(1.5);
+            g.scene.position.y = -0.3;
+          }
+          console.log("Applied Scale:", finalScale, "Final Y Position:", g.scene.position.y);
+
+          const propNums = ['173', '172', '170', '167', '168', '174', '161', '160', '164', '165', '158', '159', '156', '157', '163', '162'];
+
+          let meshCount = 0;
+          const rawProps = []; // Temporary array to hold the un-pivot-fixed elements
+          // Collect requested propeller meshes
+          g.scene.traverse(child => {
+            if (child.isMesh) {
+              meshCount++;
+              const isProp = propNums.some(pn => child.name.includes(pn));
+              if (isProp) {
+                if (!rawProps.includes(child)) rawProps.push(child);
+              } else if (child.parent && child.parent.type === 'Group' && propNums.some(pn => child.parent.name.includes(pn))) {
+                if (!rawProps.includes(child.parent)) rawProps.push(child.parent);
+              }
+            }
+          });
+
+          taxi.add(g.scene);
+
+          // Force a transform update to ensure bounding boxes map accurately
+          taxi.updateMatrixWorld(true);
+
+          // Fix pivot points: Exporters usually place the local origin of all objects at (0,0,0)
+          // This creates "orbiting" instead of "spinning". We solve this by adding a dynamic pivot.
+          rawProps.forEach(obj => {
+            const box = new THREE.Box3().setFromObject(obj);
+            const centerWorld = box.getCenter(new THREE.Vector3());
+
+            const pivot = new THREE.Group();
+            obj.parent.add(pivot);
+
+            // Map the world center into the parent's local space
+            pivot.parent.worldToLocal(centerWorld);
+            pivot.position.copy(centerWorld);
+
+            // attach() preserves the visual world position while shifting its local coordinate math!
+            pivot.attach(obj);
+            modelProps.push(pivot);
+          });
+
+          console.log("Total Meshes found:", meshCount);
+          console.log("Propeller Pivots re-centered and mapped:", modelProps.length);
+
+          document.getElementById('modelStatus').textContent = 'SYS: ONLINE';
+        }, undefined, err => {
+          console.error('Failed to load taxi.glb:', err);
+          document.getElementById('modelStatus').textContent = 'SYS: ERROR';
+          if (window.location.protocol === 'file:') {
+            alert("Browser Security Block (CORS): Browsers prevent loading 3D '.glb' files directly from a local 'file:///' path. Please use a local web server (like VS Code Live Server or 'python -m http.server') to view this file correctly.");
+          }
+        });
+
+        // GRID (Subtle grey for light background)
+        const grid = new THREE.GridHelper(14, 26, 0xff3a1a, 0xcccccc);
+        grid.position.y = -1.1; grid.material.transparent = true; grid.material.opacity = .4;
+        scene.add(grid);
+
+        // STATE & INTERACTION
+        let autoRot = true, wire = false, drag = false, px = 0, py = 0, rY = Math.PI / 4, rX = 0.2;
+
+        cv.addEventListener('mousedown', e => { drag = true; px = e.clientX; py = e.clientY });
+        window.addEventListener('mouseup', () => drag = false);
+        window.addEventListener('mousemove', e => { if (!drag) return; rY += (e.clientX - px) * .008; rX += (e.clientY - py) * .005; rX = Math.max(-.8, Math.min(.8, rX)); px = e.clientX; py = e.clientY; });
+        cv.addEventListener('touchstart', e => { drag = true; px = e.touches[0].clientX; py = e.touches[0].clientY }, { passive: true });
+        window.addEventListener('touchend', () => drag = false);
+        window.addEventListener('touchmove', e => { if (!drag) return; rY += (e.touches[0].clientX - px) * .01; rX += (e.touches[0].clientY - py) * .008; rX = Math.max(-.8, Math.min(.8, rX)); px = e.touches[0].clientX; py = e.touches[0].clientY; }, { passive: true });
+        cv.addEventListener('wheel', e => { cam.position.z = Math.max(2.5, Math.min(12, cam.position.z + e.deltaY * .012)); e.preventDefault(); }, { passive: false });
+
+        // CONTROLS
+        const bR = document.getElementById('bRot');
+        bR.addEventListener('click', () => { autoRot = !autoRot; bR.classList.toggle('on', autoRot); });
+        document.getElementById('bWire').addEventListener('click', function () {
+          wire = !wire; taxi.traverse(o => { if (o.isMesh && o.material && !o.material.transparent) o.material.wireframe = wire; });
+          this.classList.toggle('on', wire);
+        });
+        document.getElementById('bTop').addEventListener('click', function () { cam.position.set(0, 9, .1); cam.lookAt(0, 0, 0); this.classList.add('on'); setTimeout(() => this.classList.remove('on'), 700); });
+        document.getElementById('bSide').addEventListener('click', function () { cam.position.set(7.5, 1.5, 0); cam.lookAt(0, 0, 0); this.classList.add('on'); setTimeout(() => this.classList.remove('on'), 700); });
+        document.getElementById('bRst').addEventListener('click', () => { cam.position.set(0, 2.5, 7); cam.lookAt(0, 0, 0); rY = Math.PI / 4; rX = 0.2; autoRot = true; bR.classList.add('on'); wire = false; taxi.traverse(o => { if (o.isMesh && o.material) o.material.wireframe = false; }); document.getElementById('bWire').classList.remove('on'); });
+
+        // HUD Status Update
+        const statEl = document.getElementById('modelStatus');
+        const stats = ['SYS: ONLINE', 'RPM: 1240', 'PWR: 87%', 'ALT: 120M', 'NAV: ACTIVE'];
+        let si = 0; setInterval(() => { if (statEl.textContent !== 'SYS: LOADING...') statEl.textContent = stats[si++ % stats.length]; }, 2200);
+
+        // OPTIMIZATION: Pause heavy 3D rendering when the user scrolls past the canvas
+        let isVisible = true;
+        new IntersectionObserver(entries => {
+          isVisible = entries[0].isIntersecting;
+        }, { threshold: 0.0 }).observe(cv);
+
+        let t = 0;
+        let propSpeed = 0.8; // Default fast propeller speed
+        const _render = () => {
+          requestAnimationFrame(_render);
+
+          // Completely skip GPU processing if the model is off-screen
+          if (!isVisible) return;
+
+          t += .016;
+
+          // Target speed interpolation (fast when idling, slow when touched/dragged)
+          const targetSpeed = drag ? 0.05 : 0.8;
+          propSpeed += (targetSpeed - propSpeed) * 0.1;
+
+          // Rotate real loaded propellers
+          modelProps.forEach((r, idx) => {
+            // Alternate direction based on index if desired, but we can just use rotateY
+            const dir = (idx % 2 === 0) ? 1 : -1;
+            // Changing to rotateZ, as CAD models often use Z-up local coordinates, making local Z the visual 'Y' vector
+            r.rotateZ(propSpeed * dir);
+          });
+
+          if (autoRot && !drag) rY += .006;
+          taxi.rotation.y = rY; taxi.rotation.x = rX;
+          taxi.position.y = Math.sin(t * 1.5) * .08;
+          rnd.render(scene, cam);
+        };
+        _render();
+        window.addEventListener('resize', sz);
+        void _tok;
+      })();
+    })();
+  </script>
 </body>
+
 </html>
