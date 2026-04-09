@@ -1489,6 +1489,7 @@
           // Collect requested propeller meshes
           g.scene.traverse(child => {
             if (child.isMesh) {
+              if (child.name.includes('Body17.009') || (child.parent && child.parent.name.includes('Body17.009')) || child.name.includes('17009') || (child.parent && child.parent.name.includes('17009'))) return;
               meshCount++;
               const isProp = propNums.some(pn => child.name.includes(pn));
               if (isProp) {
