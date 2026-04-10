@@ -1013,7 +1013,6 @@
     </div>
     <div class="mctrl">
       <button class="cbtn on" id="bRot">⟳ Auto Rotate</button>
-      <button class="cbtn" id="bWire">⬡ Wireframe</button>
       <button class="cbtn" id="bTop">↑ Top View</button>
       <button class="cbtn" id="bSide">→ Side View</button>
       <button class="cbtn" id="bRst">⌂ Reset</button>
@@ -1541,7 +1540,7 @@
         scene.add(grid);
 
         // STATE & INTERACTION
-        let autoRot = true, wire = false, drag = false, px = 0, py = 0, rY = Math.PI / 4, rX = 0.2;
+        let autoRot = true, drag = false, px = 0, py = 0, rY = Math.PI / 4, rX = 0.2;
 
         cv.addEventListener('mousedown', e => { drag = true; px = e.clientX; py = e.clientY });
         window.addEventListener('mouseup', () => drag = false);
@@ -1554,13 +1553,9 @@
         // CONTROLS
         const bR = document.getElementById('bRot');
         bR.addEventListener('click', () => { autoRot = !autoRot; bR.classList.toggle('on', autoRot); });
-        document.getElementById('bWire').addEventListener('click', function () {
-          wire = !wire; taxi.traverse(o => { if (o.isMesh && o.material && !o.material.transparent) o.material.wireframe = wire; });
-          this.classList.toggle('on', wire);
-        });
         document.getElementById('bTop').addEventListener('click', function () { cam.position.set(0, 9, .1); cam.lookAt(0, 0, 0); this.classList.add('on'); setTimeout(() => this.classList.remove('on'), 700); });
         document.getElementById('bSide').addEventListener('click', function () { cam.position.set(7.5, 1.5, 0); cam.lookAt(0, 0, 0); this.classList.add('on'); setTimeout(() => this.classList.remove('on'), 700); });
-        document.getElementById('bRst').addEventListener('click', () => { cam.position.set(0, 2.5, 7); cam.lookAt(0, 0, 0); rY = Math.PI / 4; rX = 0.2; autoRot = true; bR.classList.add('on'); wire = false; taxi.traverse(o => { if (o.isMesh && o.material) o.material.wireframe = false; }); document.getElementById('bWire').classList.remove('on'); });
+        document.getElementById('bRst').addEventListener('click', () => { cam.position.set(0, 2.5, 7); cam.lookAt(0, 0, 0); rY = Math.PI / 4; rX = 0.2; autoRot = true; bR.classList.add('on'); });
 
         // HUD Status Update
         const statEl = document.getElementById('modelStatus');
