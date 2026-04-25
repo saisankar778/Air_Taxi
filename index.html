@@ -1427,7 +1427,7 @@
         const taxi = new THREE.Group();
         scene.add(taxi);
         const modelProps = [];
-        const propNames = ['Body1.173', 'Body1.172', 'Body1.170', 'Body1.167', 'Body1.168', 'Body1.174', 'Body1.161', 'Body1.160', 'Body1.164', 'Body1.165', 'Body1.158', 'Body1.159', 'Body1.156', 'Body1.157', 'Body1.163', 'Body1.162'];
+        const propNames = ['body1121', 'body1128', 'body1129', 'body1130', 'body1132', 'body1133', 'body1135', 'body1136', 'body1138', 'body1140', 'body1141', 'body1142', 'body1120', 'body1122', 'body1124', 'body1125'];
 
         document.getElementById('modelStatus').textContent = 'SYS: LOADING...';
 
@@ -1437,7 +1437,7 @@
         dracoLoader.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
         loader.setDRACOLoader(dracoLoader);
 
-        loader.load('taxi.glb', g => {
+        loader.load('Air_updated1.glb', g => {
           // Auto-center the model based on its bounding box
           const box = new THREE.Box3().setFromObject(g.scene);
           const size = box.getSize(new THREE.Vector3()).length();
@@ -1460,7 +1460,7 @@
           }
           console.log("Applied Scale:", finalScale, "Final Y Position:", g.scene.position.y);
 
-          const propNums = ['173', '172', '170', '167', '168', '174', '161', '160', '164', '165', '158', '159', '156', '157', '163', '162'];
+          const propNums = ['1121', '1128', '1129', '1130', '1132', '1133', '1135', '1136', '1138', '1140', '1141', '1142', '1120', '1122', '1124', '1125'];
 
           let meshCount = 0;
           const rawProps = []; // Temporary array to hold the un-pivot-fixed elements
